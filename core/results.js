@@ -10,6 +10,7 @@ module.exports = function(data) {
 		generator = '',
 		metrics = {},
 		offenders = {},
+		har = {},
 		url;
 
 	if (data) {
@@ -17,6 +18,7 @@ module.exports = function(data) {
 		generator = data.generator;
 		metrics = data.metrics;
 		offenders = data.offenders;
+		har = data.har;
 		url = data.url;
 	}
 
@@ -39,6 +41,13 @@ module.exports = function(data) {
 		},
 		getMetricsNames: function() {
 			return Object.keys(metrics);
+		},
+		// har
+		setHar : function(val){
+			har = val;
+		},
+		getHar : function(){
+			return har;
 		},
 
 		// offenders
@@ -90,7 +99,6 @@ module.exports = function(data) {
 		getAssertion: function(metric) {
 			return asserts[metric];
 		},
-
 		// assertions
 		assert: function(metric) {
 			var expected = this.getAssertion(metric),

@@ -9,6 +9,7 @@ module.exports = function(results) {
 		url: results.getUrl(),
 		metrics: results.getMetrics(),
 		offenders: results.getAllOffenders(),
+		har: results.getHar(),
 		asserts: false
 	};
 

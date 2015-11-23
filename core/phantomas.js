@@ -243,7 +243,8 @@ phantomas.prototype = {
 
 			// offenders
 			addOffender: this.addOffender.bind(this),
-
+			// har
+			setHar : this.setHar.bind(this),
 			// debug
 			log: this.log.bind(this),
 			echo: this.echo.bind(this),
@@ -381,7 +382,7 @@ phantomas.prototype = {
 		}
 
 		this.start = Date.now();
-
+		
 		var self = this;
 
 		// setup viewport / --viewport=1366x768
@@ -392,7 +393,7 @@ phantomas.prototype = {
 				width: parseInt(parsedViewport[0], 10) || 1366,
 				height: parseInt(parsedViewport[1], 10) || 768
 			};
-
+			
 			this.page.viewportSize = viewportSize;
 
 			this.on('init', function() {
@@ -446,53 +447,39 @@ phantomas.prototype = {
 
 		this.initLoadingProgress();
 
-		// do not wait for any requests, stop immediately after onload event (issue #513)
-		if (this.getParam('stop-at-onload', false) === true) {
-			this.log('stop-at-onload: --stop-at-onload passed, will stop immediately after onload event');
-		} else {
-			// observe HTTP requests
-			// finish when the last request is completed + one second timeout
-			this.reportQueue.push(function(done) {
-				var currentRequests = 0,
-					requestsUrls = {},
-					onFinished = function(entry) {
-						currentRequests--;
-						delete requestsUrls[entry.url];
+		// observe HTTP requests
+		// finish when the last request is completed + one second timeout
+		this.reportQueue.push(function(done) {
+			var currentRequests = 0,
+				requestsUrls = {},
+				onFinished = function(entry) {
+					currentRequests--;
+					delete requestsUrls[entry.url];
 
-						if (currentRequests < 1) {
-							timeoutId = setTimeout(function() {
-								done();
-							}, 1000);
-						}
-					},
-					timeoutId;
+					if (currentRequests < 1) {
+						timeoutId = setTimeout(function() {
+							done();
+						}, 1000);
+					}
+				},
+				timeoutId;
 
-				// update HTTP requests counter
-				self.on('send', function(entry) {
-					clearTimeout(timeoutId);
+			// update HTTP requests counter
+			self.on('send', function(entry) {
+				clearTimeout(timeoutId);
 
-					currentRequests++;
-					requestsUrls[entry.url] = true;
-				});
-
-				self.on('recv', onFinished);
-				self.on('abort', onFinished);
-
-				// add debug info about pending responses (issue #216)
-				self.on('timeout', function() {
-					var timedOutRequests = Object.keys(requestsUrls);
-
-					self.log('Timeout: gave up waiting for %d HTTP response(s): <%s>', currentRequests, timedOutRequests.join('>, <'));
-
-					// emit timed out requests as a fake metric (#539)
-					self.results.setMetric('requestsWithTimeout', timedOutRequests.length);
-
-					timedOutRequests.forEach(function(url) {
-						self.results.addOffender('requestsWithTimeout', url);
-					});
-				});
+				currentRequests++;
+				requestsUrls[entry.url] = true;
 			});
-		}
+
+			self.on('recv', onFinished);
+			self.on('abort', onFinished);
+
+			// add debug info about pending responses (issue #216)
+			self.on('timeout', function() {
+				self.log('Timeout: gave up waiting for %d HTTP response(s): <%s>', currentRequests, Object.keys(requestsUrls).join('>, <'));
+			});
+		});
 
 		this.reportQueue.push(function(done) {
 			self.on('loadFinished', done);
@@ -523,11 +510,6 @@ phantomas.prototype = {
 
 	// called when all HTTP requests are completed
 	report: function() {
-		// restote the native JSON.parse (just in case, see #482)
-		this.page.evaluate(function() {
-			JSON.parse = window.__phantomas && window.__phantomas.JSON.parse;
-		});
-
 		this.emitInternal('report'); // @desc the report is about to be generated
 
 		var time = Date.now() - this.start;
@@ -587,15 +569,12 @@ phantomas.prototype = {
 			return;
 		}
 
-		var currentUrl = this.page.url;
-
 		// prevent multiple triggers in PhantomJS
-		// but only on the same page (issue #550)
-		if (this.initTriggered === currentUrl) {
-			this.log('onInit: was already triggered for <%s>', currentUrl);
+		if (this.initTriggered) {
+			this.log('onInit: was already triggered');
 			return;
 		}
-		this.initTriggered = currentUrl;
+		this.initTriggered = true;
 
 		// add helper tools into window.__phantomas "namespace"
 		if (!this.page.injectJs(this.dir + 'core/scope.js')) {
@@ -728,7 +707,9 @@ phantomas.prototype = {
 			case 'addOffender':
 				this.addOffender.apply(this, data);
 				break;
-
+			case 'setHar':
+				this.setHar.apply(this,data);
+				break;
 			case 'emit':
 				this.emit.apply(this, data);
 				break;
@@ -780,7 +761,9 @@ phantomas.prototype = {
 	getMetric: function(name) {
 		return this.results.getMetric(name);
 	},
-
+	setHar : function(data){
+		this.results.setHar(data);
+	},
 	getSource: function() {
 		return this.page.content;
 	},
