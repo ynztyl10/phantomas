@@ -1,12 +1,12 @@
 {
-  "name": "phantomas",
+  "name": "ynztyl10_phantomas",
   "version": "1.13.0",
   "author": "macbre <maciej.brencz@gmail.com> (http://macbre.net)",
   "description": "PhantomJS-based web performance metrics collector",
   "main": "./lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/macbre/phantomas.git"
+    "url": "git://github.com/ynztyl10/phantomas.git"
   },
   "keywords": [
     "high performance web sites",
