@@ -17,7 +17,7 @@
     "web development",
     "webperf"
   ],
-  "license": "BSD",
+  "license": "BSD-2-Clause",
   "engines": {
     "node": ">=0.10"
   },
@@ -54,7 +54,9 @@
     "vows": "^0.7.0"
   },
   "optionalDependencies": {},
-  "bin": "./bin/phantomas.js",
+  "bin": {
+    "ynztyl10_phantomas": "./bin/phantomas.js"
+  },
   "preferGlobal": true,
   "scripts": {
     "test": "PHANTOMAS_ENGINE=webkit vows --spec && PHANTOMAS_ENGINE=webkit2 vows --spec",
@@ -67,5 +69,13 @@
     "node": true,
     "-W020": false,
     "-W030": false
+  },
+  "bugs": {
+    "url": "https://github.com/ynztyl10/phantomas/issues"
+  },
+  "homepage": "https://github.com/ynztyl10/phantomas#readme",
+  "directories": {
+    "example": "examples",
+    "test": "test"
   }
 }
