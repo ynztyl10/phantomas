@@ -23,10 +23,12 @@ exports.module = function(phantomas) {
 			phantomas.evaluate(function() {
 				(function(phantomas) {
 					phantomas.log('Scroll: scrolling the page down...');
-					document.body.scrollIntoView(false);
-
+					var scrollHeight = document.body.scrollHeight;
+					window.scrollTo(0,document.body.scrollHeight);
 					var offset = document.body.scrollTop;
+					
 					phantomas.log('Scroll: scroll offset is %d px', offset);
+					phantomas.log('Scroll: scroll height is %d px', scrollHeight);
 				})(window.__phantomas);
 			});
 
