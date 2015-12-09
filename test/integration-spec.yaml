@@ -2,7 +2,16 @@
 
 # phantomas scope helper functions
 - url: "/phantomas-scope.html"
-  label: "/phantomas-scope.html"
+  label: "/phantomas-scope.html (using PhantomJS)"
+  options:
+    engine: "webkit"
+  metrics:
+    jsErrors: 0
+    asserts: 10
+- url: "/phantomas-scope.html"
+  label: "/phantomas-scope.html (using SlimerJS)"
+  options:
+    engine: "gecko"
   metrics:
     jsErrors: 0
     asserts: 10
@@ -14,36 +23,49 @@
     cssCount: 1
     jsCount: 1
     domains: 1
-    DOMqueries: 20
+    DOMqueries: 18
     DOMqueriesById: 7
     DOMqueriesByClassName: 1
-    DOMqueriesByTagName: 9
+    DOMqueriesByTagName: 7
+    DOMqueriesByQuerySelectorAll: 3
+    DOMinserts: 2
+    DOMmutationsInserts: 0
+    DOMqueriesDuplicated: 3
+    DOMqueriesAvoidable: 4
+    DOMqueriesWithoutResults: 4
+# DOM operations (in SlimerJS)
+- url: "/dom-operations.html"
+  label: "/dom-operations.html (using SlimerJS)"
+  options:
+    engine: "gecko"
+  metrics:
+    requests: 3
+    cssCount: 1
+    jsCount: 1
+    domains: 1
+    DOMqueries: 18
+    DOMqueriesById: 7
+    DOMqueriesByClassName: 1
+    DOMqueriesByTagName: 7
     DOMqueriesByQuerySelectorAll: 3
     DOMinserts: 2 # "div" appended to "html" (from jQuery) and the one below
-    DOMqueriesDuplicated: 2
-    DOMqueriesAvoidable: 3
-    DOMqueriesWithoutResults: 4
-
-# DOM mutations
-- url: "/dom-operations.html"
-  skip: "webkit" # do not run using PhantomJS 1.9.x as it doesn't support DOM mutations API
-  metrics:
     DOMmutationsInserts: 1 # DocumentFragment > b[0]" appended to "body > p#foo"
-
+    DOMqueriesDuplicated: 3
+    DOMqueriesAvoidable: 4
+    DOMqueriesWithoutResults: 4
 # DOM complexity
 - url: "/dom-complexity.html"
   metrics:
-    bodyHTMLSize: 709
-    commentsSize: 85
-    DOMelementsCount: 11
+    bodyHTMLSize: 264
+    commentsSize: 12
+    DOMelementsCount: 6
     DOMelementMaxDepth: 2
     DOMidDuplicated: 0
-    hiddenContentSize: 373
+    hiddenContentSize: 10
     imagesScaledDown: 0
-    imagesWithoutDimensions: 3
-    hiddenImages: 3
+    imagesWithoutDimensions: 2
     nodesWithInlineCSS: 1
-    whiteSpacesSize: 33
+    whiteSpacesSize: 14 # 7 lines of HTML - "\n\t" each
 # document height
 - url: "/document-height.html"
   metrics:
@@ -57,13 +79,11 @@
 - url: "/dom-id.html"
   metrics:
     DOMidDuplicated: 2 # foo and bar
-# assertions & exit codes (#382 / #528)
+# assertions & exit codes (#382)
 - url: "/dom-id.html"
   label: "Assertions and exit code"
   options:
     "assert-requests": 0
-  metrics:
-    requests: 1
   exitCode: 1 # one assert not met
 # inline styles (#397)
 - url: "/inline-css.html"
@@ -106,23 +126,9 @@
 # multiple jQuery "instances" (issue #435)
 - url: "/jquery-multiple.html"
   metrics:
-    requests: 4
-    jsCount: 3
-    domains: 2
     jQueryVersion: "1.11.1" # the last loaded version
     jQueryVersionsLoaded: 3
     jQueryOnDOMReadyFunctions: 1
-# --no-externals handling (issue #535)
-- url: "/jquery-multiple.html"
-  label: "/jquery-multiple.html (with --no-externals)"
-  options:
-    "no-externals": true
-  metrics:
-    requests: 2
-    jsCount: 1
-    blockedRequests: 2
-    domains: 1
-    jsErrors: 0
 # jQuery read & write operations (issue #436)
 - url: "/jquery-reads-writes.html"
   metrics:
@@ -159,14 +165,12 @@
     'wait-for-event': "done"
   metrics:
     testFooBar: 123 # a metric set just before event trigger
-# requests to (#438 / #486)
+# requests to (issue #438)
 - url: "/timing.html"
   metrics:
     requests: 4
-#    requestsToDomContentLoaded: 4
-#    domainsToDomContentLoaded: 1
+    requestsToDomContentLoaded: 4
     requestsToDomComplete: 4
-    domainsToDomComplete: 1
 # JS bottlenecks (#467)
 - url: "/bottlenecks.html"
   label: "/bottlenecks.html (--spy-eval)"
@@ -179,32 +183,4 @@
   metrics:
     documentWriteCalls: 1
     evalCalls: 1 # via setTimeout() only
-# stop-at-onload (#513)
-- url: "/after-onload.html"
-  label: "/after-onload.html (--stop-at-onload)"
-  options:
-    "stop-at-onload": true
-  metrics:
-    imageCount: 1
-    requests: 2
-- url: "/after-onload.html"
-  label: "/after-onload.html"
-  metrics:
-    imageCount: 2
-    requests: 3
-# lazy-loadable-images.html (#494)
-- url: "/lazy-loadable-images.html"
-  metrics:
-    lazyLoadableImagesBelowTheFold: 2
-# JS globals (#482)
-- url: "/js-globals.html"
-  metrics:
-    globalVariables: 3
-    globalVariablesFalsy: 1
-    jsErrors: 0
-# JS redirects (#550)
-- url: "/js-redirect.html"
-  metrics:
-    requests: 2
-    htmlCount: 2
-    jsErrors: 0
+

@@ -31,7 +31,6 @@ exports.module = function(phantomas) {
 					if (window.mozPaintCount > lastPaintCountValue) {
 						if (lastPaintCountValue === 0) {
 							phantomas.emit('firstPaint'); // @desc fired on the first paint @desc
-							phantomas.emit('milestone', 'firstPaint');
 						}
 
 						lastPaintCountValue = window.mozPaintCount;

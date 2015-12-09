@@ -4,22 +4,18 @@
 /* global document: true, Node: true, window: true */
 'use strict';
 
-exports.version = '1.0';
+exports.version = '0.1';
 
 exports.module = function(phantomas) {
 
 	// total length of HTML of hidden elements (i.e. display: none)
 	phantomas.setMetric('hiddenContentSize'); // @desc the size of content of hidden elements on the page (with CSS display: none) @offenders
-	phantomas.setMetric('hiddenImages'); // @desc number of hidden images that can be lazy-loaded @offenders
 
 	// HTML size
 	phantomas.on('report', function() {
 		phantomas.evaluate(function() {
 			(function(phantomas) {
-				var runner = new phantomas.nodeRunner(),
-					lazyLoadableImages = {};
-
-				phantomas.spyEnabled(false, 'analyzing hidden content');
+				var runner = new phantomas.nodeRunner();
 
 				runner.walk(document.body, function(node, depth) {
 					switch (node.nodeType) {
@@ -38,29 +34,6 @@ exports.module = function(phantomas) {
 									}
 								}
 
-								// count hidden images that can be lazy loaded (issue #524)
-								var images = [];
-								if (node.tagName === 'IMG') {
-									images = [node];
-								} else if (typeof node.querySelectorAll === 'function') {
-									images = node.querySelectorAll('img') || [];
-								}
-
-								for (var i = 0, len = images.length; i < len; i++) {
-									var src = images[i].src,
-										path;
-
-									if (src === '' || src.indexOf('data:image') === 0) continue;
-
-									if (!lazyLoadableImages[src]) {
-										path = phantomas.getDOMPath(images[i]);
-
-										lazyLoadableImages[src] = {
-											path: path
-										};
-									}
-								}
-
 								// don't run for child nodes as they're hidden as well
 								return false;
 							}
@@ -68,16 +41,6 @@ exports.module = function(phantomas) {
 					}
 				});
 
-				Object.keys(lazyLoadableImages).forEach(function(img) {
-					var entry = lazyLoadableImages[img];
-
-					phantomas.incrMetric('hiddenImages');
-					phantomas.addOffender('hiddenImages', img);
-
-					phantomas.log('hiddenImages: <%s> image (%s) is hidden and can be lazy-loaded', img, entry.path);
-				});
-
-				phantomas.spyEnabled(true);
 			}(window.__phantomas));
 		});
 	});

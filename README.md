@@ -26,19 +26,6 @@ npm install --global phantomas
 
 You may need to install libfontconfig by running ``sudo apt-get install libfontconfig1``.
 
-### Development version
-
-To get the latest development version of phantomas (and install all required dependencies):
-
-```
-git clone git@github.com:macbre/phantomas.git
-npm install
-```
-
-## Having problems?
-
-Please refer to **[/Troubleshooting.md](https://github.com/macbre/phantomas/blob/devel/Troubleshooting.md)**
-
 ## Libraries
 
 phantomas is written in JavaScript, but you can experience it in different languages as well ;)
@@ -67,19 +54,21 @@ pip install phantomas
 
 ## Contributors
 
-> All the [contributors](https://github.com/macbre/phantomas/graphs/contributors)
-
 * [macbre](https://github.com/macbre)
+* [jmervine](https://github.com/jmervine)
+* [jmosney](https://github.com/jmosney)
+* [umaar](https://github.com/umaar)
 * [sjhcockrell](https://github.com/sjhcockrell)
-* [jgonera](https://github.com/jgonera)
-* [william-p](https://github.com/william-p)
-* [gmetais](https://github.com/gmetais)
-* [vgangan](https://github.com/vgangan)
 * [cphoover](https://github.com/cphoover)
-* [wladekb](https://github.com/wladekb)
+* [LaurentGoderre](https://github.com/LaurentGoderre)
+* [kennydee](https://github.com/kennydee)
 * [iNem0o](https://github.com/iNem0o)
-* [gomezd](https://github.com/gomezd)
 * [stefanjudis](https://github.com/stefanjudis)
+* [vgangan](https://github.com/vgangan)
+* [william-p](https://github.com/william-p)
+* [cvan](https://github.com/cvan)
+* [gomezd](https://github.com/gomezd)
+* All the [contributors](https://github.com/macbre/phantomas/graphs/contributors)
 
 ## Usage
 
@@ -105,7 +94,7 @@ phantomas https://github.com/macbre/phantomas --verbose --no-externals --allow-d
 * `--verbose` writes debug messages to the console
 * `--debug` run PhantomJS in debug mode
 * `--engine` select engine used to run the phantomas ``[webkit|gecko]`` **experimental**
-* `--colors` forces ANSI colors even when output is piped (e,g. via ``less -r``)
+* `--colors` forces ANSI colors even when output is piped (eg. via ``less -r``)
 * `--silent` don't write anything to the console
 * `--progress` shows page loading progress bar (disables verbose mode)
 * `--log=[log file]` log to a given file
@@ -133,7 +122,6 @@ phantomas https://github.com/macbre/phantomas --verbose --no-externals --allow-d
 * `--har=[file name]` save HAR to a given file
 * `--wait-for-event=[phantomas event name]` wait for a given phantomas event before generating a report, timeout setting still applies (e.g. ``--wait-for-event "done"``)
 * `--wait-for-selector=[CSS selector]` wait for an element matching given CSS selector before generating a report, timeout setting still applies (e.g. ``--wait-for-selector "body.loaded"``)
-* `--stop-at-onload` stop phantomas **immediately after `onload` event**
 * `--scroll` scroll down the page when it''s loaded
 * `--post-load-delay=[seconds]` wait X seconds before generating a report, timeout setting still applies
 * `--ignore-ssl-errors` ignores SSL errors, such as expired or self-signed certificate errors
@@ -157,7 +145,7 @@ Only ``plain`` (the default one) and ``json`` reporters are currently supported 
 
 ## Metrics
 
-_Current number of metrics: 135_
+_Current number of metrics: 129_
 
 Units:
 
@@ -246,6 +234,7 @@ Units:
 * globalVariablesFalsy: number of JS global variables that cast to false
 * bodyHTMLSize: the size of body tag content (``document.body.innerHTML.length``)
 * commentsSize: the size of HTML comments on the page
+* hiddenContentSize: the size of content of hidden elements on the page (with CSS ``display: none``)
 * whiteSpacesSize: the size of text nodes with whitespaces only
 * DOMelementsCount: total number of HTML element nodes
 * DOMelementMaxDepth: maximum level on nesting of HTML element node
@@ -254,11 +243,6 @@ Units:
 * nodesWithInlineCSS: number of nodes with inline CSS styling (with `style` attribute)
 * imagesScaledDown: number of <img> nodes that have images scaled down in HTML
 * imagesWithoutDimensions: number of ``<img>`` nodes without both ``width`` and ``height`` attribute
-
-### DOM hidden content
-
-* hiddenContentSize: the size of content of hidden elements on the page (with CSS ``display: none``)
-* hiddenImages: number of hidden images that can be lazy-loaded
 
 ### DOM queries
 
@@ -322,12 +306,8 @@ Units:
 
 ### Requests to
 
-* requestsToFirstPaint: number of HTTP requests it took to make the first paint
-* domainsToFirstPaint: number of domains used to make the first paint
 * requestsToDomContentLoaded: number of HTTP requests it took to make the page reach `DomContentLoaded` state
-* domainsToDomContentLoaded: number of domains used to make the page reach DomContentLoaded state
 * requestsToDomComplete: number of HTTP requests it took to make the page reach `DomComplete` state
-* domainsToDomComplete: number of domains used to make the page reach DomComplete state
 
 ### keepAlive
 
@@ -408,10 +388,6 @@ Units:
 ### Document height
 
 * [documentHeight](http://www.stevesouders.com/blog/2014/06/08/http-archive-new-stuff/): the page height in pixels
-
-### Lazy-loadable images
-
-* lazyLoadableImagesBelowTheFold: number of images displayed below the fold that can be lazy-loaded
 
 ### Optional metrics
 
@@ -502,14 +478,7 @@ Note: as ``<port>`` option was skipped a default value will be used (``9200``).
 
 ## Engines
 
-phantomas can be run using [PhantomJS](http://phantomjs.org/) 1.x and [2.0](https://github.com/macbre/phantomas/pull/531) (WebKit-powered headless browser) or [SlimerJS](https://slimerjs.org/) (Gecko-based non headless browser, run using [`xfvb`](http://www.x.org/releases/X11R7.6/doc/man/man1/Xvfb.1.xhtml)).
-
-You can choose the engine by using either:
-
-* cli option: ``--engine=[webkit|webkit2|gecko]`` or ``--webkit`` / ``--webkit2`` / ``--gecko``
-* `PHANTOMAS_ENGINE` environmental variable: e.g. `PHANTOMAS_ENGINE=webkit2`
-
-> Please note that **support for SlimerJS is experimental at this point**.
+phantomas can be run using PhantomJS (WebKit-powered headless browser) or SlimerJS (Gecko-based non headless browser, run using xfvb). Use either ``--engine=[webkit|gecko]`` or ``--webkit`` / ``--gecko`` parameters to choose one. Please note that **support for SlimerJS is experimental at this point**.
 
 ### PhantomJS
 

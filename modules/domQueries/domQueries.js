@@ -86,11 +86,6 @@ exports.module = function(phantomas) {
 					var destNodePath = phantomas.getDOMPath(this),
 						appendedNodePath = phantomas.getDOMPath(child);
 
-					// skip undefined nodes (issue #560)
-					if (destNodePath === false) {
-						return;
-					}
-
 					// don't count elements added to fragments as a DOM inserts (issue #350)
 					// DocumentFragment > div[0]
 					if (destNodePath.indexOf('DocumentFragment') === 0) {
@@ -131,15 +126,7 @@ exports.module = function(phantomas) {
 		phantomas.log('DOM query: by %s - "%s" (using %s) in %s', type, query, fnName, context);
 		phantomas.incrMetric('DOMqueries');
 
-		// Don't count document fragments or not yet inserted elements inside duplicated queries
-		if (context && (
-				context.indexOf('html') === 0 ||
-				context.indexOf('body') === 0 ||
-				context.indexOf('head') === 0 ||
-				context.indexOf('#document') === 0
-			)) {
-			DOMqueries.push(type + ' "' + query + '" (in ' + context + ')');
-		}
+		DOMqueries.push(type + ' "' + query + '" (in ' + context + ')');
 	});
 
 	phantomas.on('report', function() {

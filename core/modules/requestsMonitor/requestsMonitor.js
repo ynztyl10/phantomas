@@ -94,7 +94,7 @@ exports.module = function(phantomas) {
 
 		phantomas.log('req: <%s>', entry.url);
 
-		phantomas.emit('send', entry, res); // @desc request has been sent
+		phantomas.emitInternal('send', entry, res); // @desc request has been sent
 	});
 
 	phantomas.on('onResourceReceived', function(res) {
@@ -102,12 +102,11 @@ exports.module = function(phantomas) {
 		var entry = requests[res.id] || {};
 
 		// fix for blocked requests still "emitting" onResourceReceived with "stage" = 'end' and empty "status" (issue #122)
-		// or empty URL (broken in PhantomJS 2.0.1 (PR #573)
-		if (res.status === null || res.url === '' ) {
+		if (res.status === null ) {
 			if (entry.isBlocked) {
 				return;
 			} else if (!entry.isBase64) {
-				phantomas.log('Got a response with no status or URL set: <%s> (%j)', res.url, res);
+				phantomas.log('Blocked request by phantomjs: <' + entry.url + '>');
 				phantomas.emitInternal('abort', entry, res); // @desc request has been blocked
 			}
 		}
@@ -180,11 +179,6 @@ exports.module = function(phantomas) {
 									entry.isHTML = true;
 									break;
 
-								case 'text/xml':
-									entry.type = 'xml';
-									entry.isXML = true;
-									break;
-
 								case 'text/css':
 									entry.type = 'css';
 									entry.isCSS = true;
@@ -209,10 +203,6 @@ exports.module = function(phantomas) {
 								case 'image/webp':
 									entry.type = 'image';
 									entry.isImage = true;
-
-									if (value === 'image/svg+xml') {
-										entry.isSVG = true;
-									}
 									break;
 
 								case 'video/webm':
@@ -233,10 +223,6 @@ exports.module = function(phantomas) {
 								case 'font/woff':
 									entry.type = 'webfont';
 									entry.isWebFont = true;
-
-									if (/ttf|truetype$/.test(value)) {
-										entry.isTTF = true;
-									}
 									break;
 
 								case 'application/octet-stream':
@@ -249,12 +235,6 @@ exports.module = function(phantomas) {
 											entry.isWebFont = true;
 											break;
 									}
-									break;
-
-								case 'image/x-icon':
-								case 'image/vnd.microsoft.icon':
-									entry.type = 'favicon';
-									entry.isFavicon = true;
 									break;
 
 								default:
@@ -321,11 +301,11 @@ exports.module = function(phantomas) {
 				}
 
 				if (entry.isBase64) {
-					phantomas.emit('base64recv', entry, res); // @desc base64-encoded "response" has been received
+					phantomas.emitInternal('base64recv', entry, res); // @desc base64-encoded "response" has been received
 				}
 				else {
 					phantomas.log('recv: HTTP %d <%s> [%s]', entry.status, entry.url, entry.contentType);
-					phantomas.emit('recv' , entry, res); // @desc response has been received
+					phantomas.emitInternal('recv' , entry, res); // @desc response has been received
 				}
 				break;
 		}

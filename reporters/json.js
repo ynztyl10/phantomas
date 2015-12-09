@@ -15,6 +15,7 @@ module.exports = function(results, reporterOptions) {
 			url: results.getUrl(),
 			metrics: results.getMetrics(),
 			offenders: results.getAllOffenders(),
+            har:results.getHar(),
 			asserts: false
 		};
 

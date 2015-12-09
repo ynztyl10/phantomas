@@ -1,12 +1,12 @@
 {
-  "name": "ynztyl10_phantomas",
-  "version": "1.13.0",
+  "name": "phantomas",
+  "version": "1.10.2",
   "author": "macbre <maciej.brencz@gmail.com> (http://macbre.net)",
   "description": "PhantomJS-based web performance metrics collector",
   "main": "./lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ynztyl10/phantomas.git"
+    "url": "git://github.com/macbre/phantomas.git"
   },
   "keywords": [
     "high performance web sites",
@@ -17,31 +17,28 @@
     "web development",
     "webperf"
   ],
-  "license": "BSD-2-Clause",
+  "license": "BSD",
   "engines": {
     "node": ">=0.10"
   },
   "dependencies": {
-    "analyze-css": "0.10.x",
+    "analyze-css": "0.9.x",
     "ansicolors": "~0.3.2",
     "ansistyles": "~0.1.0",
     "ascii-table": "0.0.8",
-    "async": "^1.2.0",
-    "csv-string": "^2.3.0",
-    "debug": "^2.2.0",
-    "elasticsearch": "^4.1.0",
-    "glob": "^5.0.10",
-    "http-server": "^0.8.0",
+    "async": "~0.9.0",
+    "csv-string": "~2.2.2",
+    "debug": "~2.1.0",
+    "elasticsearch": "~3.0.0",
     "js-yaml": "^3.1.0",
     "node-statsd": "0.1.1",
     "node-uuid": "~1.4.1",
     "optimist": "0.6.x",
     "phantomjs": "^1.9.15",
-    "phantomjs2": "macbre/phantomjs2-npm#version-2.0.1",
     "progress": "~1.1.4",
-    "q": "^1.4.1",
+    "q": "~1.1.2",
     "slimerjs": "^0.9.5",
-    "tap": "^0.7.1",
+    "tap": "0.5.0",
     "tap-eater": ">=0.0.1",
     "travis-fold": ">=0.1.2"
   },
@@ -54,14 +51,11 @@
     "vows": "^0.7.0"
   },
   "optionalDependencies": {},
-  "bin": {
-    "ynztyl10_phantomas": "./bin/phantomas.js"
-  },
+  "bin": "./bin/phantomas.js",
   "preferGlobal": true,
   "scripts": {
-    "test": "PHANTOMAS_ENGINE=webkit vows --spec && PHANTOMAS_ENGINE=webkit2 vows --spec",
-    "unit-test": "vows test/modules/*-test.js --spec",
-    "lint": "jshint --verbose core/ modules/ scripts/ test/*.js test/*/*-test.js lib/*.js lib/metadata/*.js reporters/ examples/",
+    "test": "vows --spec",
+    "lint": "jshint --verbose core/ modules/ scripts/ test/*.js test/*/*-test.js lib/*.js lib/metadata/*.js reporters/",
     "beautify": "js-beautify -r bin/phantomas.js core/*.js examples/*.js extensions/*/*.js lib/*.js lib/engines/*.js lib/metadata/*.js modules/*/*.js reporters/*.js scripts/*.js test/*.js test/*/*.js",
     "metadata": "DEBUG=* node lib/metadata/generate.js"
   },
@@ -69,13 +63,5 @@
     "node": true,
     "-W020": false,
     "-W030": false
-  },
-  "bugs": {
-    "url": "https://github.com/ynztyl10/phantomas/issues"
-  },
-  "homepage": "https://github.com/ynztyl10/phantomas#readme",
-  "directories": {
-    "example": "examples",
-    "test": "test"
   }
 }

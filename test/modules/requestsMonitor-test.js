@@ -110,10 +110,6 @@ vows.describe('requestMonitor').addBatch({
 		topic: recvContentType('text/html'),
 		'isHTML is set': assertField('isHTML', true)
 	},
-	'XML is properly detected': {
-		topic: recvContentType('text/xml'),
-		'isXML is set': assertField('isXML', true)
-	},
 	'CSS is properly detected': {
 		topic: recvContentType('text/css'),
 		'isCSS is set': assertField('isCSS', true)
@@ -140,8 +136,7 @@ vows.describe('requestMonitor').addBatch({
 	},
 	'SVG image is properly detected': {
 		topic: recvContentType('image/svg+xml'),
-		'isImage is set': assertField('isImage', true),
-		'isSVG is set': assertField('isSVG', true)
+		'isImage is set': assertField('isImage', true)
 	},
 	'WEBP image is properly detected': {
 		topic: recvContentType('image/webp'),
@@ -153,27 +148,12 @@ vows.describe('requestMonitor').addBatch({
 	},
 	'Web font is properly detected (via MIME)': {
 		topic: recvContentType('application/font-woff'),
-		'isWebFont is set': assertField('isWebFont', true),
-		'isTTF is not set': assertField('isTTF', undefined)
+		'isWebFont is set': assertField('isWebFont', true)
 	},
 	'Web font is properly detected (via URL)': {
 		topic: recvContentType('application/octet-stream', 'http://foo.bar/font.otf'),
-		'isWebFont is set': assertField('isWebFont', true),
-		'isTTF is not set': assertField('isTTF', undefined)
-	},
-	'TTF font is properly detected': {
-		topic: recvContentType('application/x-font-ttf'),
-		'isWebFont is set': assertField('isWebFont', true),
-		'isTTF is set': assertField('isTTF', true)
-	},
-	'favicon is properly detected': {
-		topic: recvContentType('image/x-icon'),
-		'isFavicon is set': assertField('isFavicon', true)
-	},
-	'favicon is properly detected (Microsoft\'s MIME type)': {
-		topic: recvContentType('image/vnd.microsoft.icon'),
-		'isFavicon is set': assertField('isFavicon', true)
-	},
+		'isWebFont is set': assertField('isWebFont', true)
+	}
 }).addBatch({
 	'redirects are detected (HTTP 301)': {
 		topic: recvReq('', {
